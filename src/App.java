@@ -30,10 +30,10 @@ public class App {
         switch (opcion) {
             case "1":
                 query.insertarLibro();
-                break;/* 
+                break;
             case "2":
                 query.eliminarLibro();
-                break;
+                break;/*
             case "3":
                 query.actualizarLibro();
             case "4":
