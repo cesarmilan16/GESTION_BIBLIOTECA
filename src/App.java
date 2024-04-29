@@ -1,9 +1,46 @@
+import java.util.Scanner;
+
 import Modelo.Conexion;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        Conexion.establecerConexion();
+        boolean salir = false;
+        while (!salir) {
+            salir = mostrarApp();
+        }
+    }
 
-        Conexion.cerrarConexion();
+    private static boolean mostrarApp() {
+        boolean salir = false;
+        System.out.println("*****************************");
+        System.out.println("*******Menu principal********");
+        System.out.println("*****************************");
+        System.out.println("1.- Insertar libro");
+        System.out.println("2.- Eliminar libro");
+        System.out.println("3.- Actualizar libro");
+        System.out.println("4.- Buscar libro");
+        System.out.println("9.- Salir");
+
+        Scanner scanner = new Scanner(System.in);
+        String opcion = scanner.nextLine();
+
+        switch (opcion) {
+            case "1":
+                query.insertarLibro();
+                break;
+            case "2":
+                query.eliminarLibro();
+                break;
+            case "3":
+                query.actualizarLibro();
+            case "4":
+                query.buscarLibro();
+            case "9":
+                salir = true;
+                break;
+            default:
+                break;
+        }
+        return salir;
     }
 }
