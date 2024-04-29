@@ -9,7 +9,7 @@ public class Conexion {
     static String contraseña = "Cesarmilan1996";
     static Connection conexion = null;
 
-    public static void establecerConexion(){
+    public static Connection establecerConexion(){
         try {
             conexion = DriverManager.getConnection(url, usuario, contraseña);
             System.out.println("Conexión exitosa con la base de datos MySQL!");
@@ -17,6 +17,7 @@ public class Conexion {
             // Manejar cualquier excepción que ocurra al intentar conectar a la base de datos
             System.err.println("Error al conectar a la base de datos: " + e.getMessage());
         }
+        return conexion;
     }
 
     public static void cerrarConexion() {
