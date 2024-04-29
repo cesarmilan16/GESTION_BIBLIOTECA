@@ -6,12 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Query {
+public class Biblioteca {
     private Connection conexion;
     private Scanner scanner = new Scanner(System.in);
 
     // Constructor que establece la conexión al instanciar el objeto
-    public Query() {
+    public Biblioteca() {
         this.conexion = Conexion.establecerConexion();
     }
     
@@ -52,10 +52,10 @@ public class Query {
                 pstmtInsertar.setString(2, autor);
                 pstmtInsertar.setString(3, genero);
                 pstmtInsertar.executeUpdate(); 
-                System.out.println("Libro insertado correctamente."); 
+                System.out.println("\nLibro insertado correctamente.\n"); 
             } else {
                 // Si el libro ya está disponible, muestra un mensaje
-                System.out.println("Libro ya disponible");
+                System.out.println("\nLibro ya disponible\n");
             }
 
             // Cierra los recursos
@@ -96,16 +96,16 @@ public class Query {
             
             // Si el libro no está disponible no se puede eliminar
             if (!disponible) {
-                System.out.println("Libro no se encuentra en la base de datos."); 
+                System.out.println("\nLibro no se encuentra en la base de datos.\n"); 
             } else {
                 // Si el libro ya está disponible se elimina
                 pstmtEliminar.setString(1, titulo);
                 int filasAfectadas = pstmtEliminar.executeUpdate();
 
                 if (filasAfectadas > 0) {
-                    System.out.println("Libro eliminado con exito");
+                    System.out.println("\nLibro eliminado con exito\n");
                 } else {
-                    System.out.println("No se encontro el libro: " + titulo);
+                    System.out.println("\nNo se encontro el libro: " + titulo + "\n");
                 }
             }
 
@@ -118,5 +118,9 @@ public class Query {
         } finally {
             conexion.setAutoCommit(true); // Vuelve al modo de confirmación automática por defecto
         }
+    }
+
+    public void actualizarLibro() throws SQLException {
+        
     }
 }

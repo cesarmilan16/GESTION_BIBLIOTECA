@@ -1,10 +1,10 @@
 import java.sql.SQLException;
 import java.util.Scanner;
-import Modelo.Query;
+import Modelo.Biblioteca;
 
 public class App {
 
-    public static Query query = new Query();
+    public static Biblioteca biblioteca = new Biblioteca();
     public static void main(String[] args) throws Exception {
         boolean salir = false;
         while (!salir) {
@@ -29,15 +29,17 @@ public class App {
 
         switch (opcion) {
             case "1":
-                query.insertarLibro();
+                biblioteca.insertarLibro();
                 break;
             case "2":
-                query.eliminarLibro();
-                break;/*
+                biblioteca.eliminarLibro();
+                break;
             case "3":
-                query.actualizarLibro();
+                biblioteca.actualizarLibro();
+                break;
+                /*
             case "4":
-                query.buscarLibro();*/
+                biblioteca.buscarLibro();*/
             case "9":
                 salir = true;
                 break;
