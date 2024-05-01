@@ -41,6 +41,7 @@ public class App {
                 break;
             case "9":
                 salir = true;
+                scanner.close();
                 break;
             default:
                 break;

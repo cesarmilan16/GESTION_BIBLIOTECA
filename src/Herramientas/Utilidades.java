@@ -22,4 +22,17 @@ public class Utilidades {
             }
         }
     }
+
+    public static int leerNum(String dato) {
+        while (true) {
+            try {
+                System.out.println("Dar " + dato);
+                String datoLeido = scanner.nextLine();
+                int datoNum = Integer.parseInt(datoLeido);
+                return datoNum;
+            } catch (Exception e) {
+                System.out.println("Valor erroneo");
+            }
+        }
+    }
 }

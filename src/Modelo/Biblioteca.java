@@ -129,16 +129,16 @@ public class Biblioteca {
         System.out.println("***************************");
         System.out.println("**** Actualizar libro *****");
         System.out.println("***************************");
-        System.out.println("Titulo: ");
-        String titulo = scanner.nextLine();
+        System.out.println("Código: ");
+        int id = Utilidades.leerNum("código de libro: ");
         
         try {
             conexion.setAutoCommit(false); // Desactiva la confirmación automática de transacciones
-            String consultaDisponibilidad = "SELECT disponible FROM libros WHERE titulo = ?";
+            String consultaDisponibilidad = "SELECT disponible FROM libros WHERE id = ?";
             PreparedStatement pstmtConsulta = conexion.prepareStatement(consultaDisponibilidad);
 
             // Consulta si el libro existe en la base de datos
-            pstmtConsulta.setString(1, titulo);
+            pstmtConsulta.setInt(1, id);
             ResultSet resultado = pstmtConsulta.executeQuery();
 
             boolean disponible = false;
@@ -157,11 +157,11 @@ public class Biblioteca {
             e.printStackTrace();
         }
         while (!salir) {
-            salir = menuActualizar(titulo);
+            salir = menuActualizar(id);
         }
     }
     
-    public boolean menuActualizar(String titulo) throws SQLException {
+    public boolean menuActualizar(int id) throws SQLException {
         boolean salir = false;
         try {
             
@@ -178,16 +178,16 @@ public class Biblioteca {
 
                 switch (opcion) {
                     case "1":
-                        actualizarColumna("titulo",titulo);
+                        actualizarColumna("titulo",id);
                         break;
                     case "2":
-                        actualizarColumna("autor", titulo);
+                        actualizarColumna("autor", id);
                         break;
                     case "3":
-                        actualizarColumna("genero",titulo);
+                        actualizarColumna("genero",id);
                         break;
                     case "4":
-                        actualizarColumna("disponible", titulo);
+                        actualizarColumna("disponible", id);
                         break;
                     case "9":
                         salir = true;
@@ -206,22 +206,22 @@ public class Biblioteca {
         return salir;
     }
 
-    public void actualizarColumna(String columna, String titulo) throws SQLException {
+    public void actualizarColumna(String columna, int id) throws SQLException {
         try {
-            String queryActualizar = "UPDATE libros SET " + columna + " = ? WHERE titulo = ?";
+            String queryActualizar = "UPDATE libros SET " + columna + " = ? WHERE id = ?";
             PreparedStatement pstmtActualizar = conexion.prepareStatement(queryActualizar);
     
         
-            if (columna == "disponible") {
+            if (columna.equals("disponible")) {
                 boolean nuevaDisponibilidad = Utilidades.leerBoolean("Nuevo valor para disponibilidad (1/0): ");
                 pstmtActualizar.setBoolean(1, nuevaDisponibilidad);
-                pstmtActualizar.setString(2, titulo);
+                pstmtActualizar.setInt(2, id);
             }
             else {
                 System.out.println("Nuevo valor para " + columna + ": ");
                 String nuevoValor = scanner.nextLine();
                 pstmtActualizar.setString(1, nuevoValor);
-                pstmtActualizar.setString(2, titulo);
+                pstmtActualizar.setInt(2, id);
             }
     
             int filasActualizadas = pstmtActualizar.executeUpdate();
@@ -255,25 +255,29 @@ public class Biblioteca {
                 System.out.println("***************************");
                 System.out.println("****** Busqueda libro *****");
                 System.out.println("***************************");
-                System.out.println("1.- Busqueda por titulo");
-                System.out.println("2.- Busqueda por autor");
-                System.out.println("3.- Busqueda por genero");
-                System.out.println("4.- Busqueda por disponibilidad");
+                System.out.println("1.- Busqueda por código");
+                System.out.println("2.- Busqueda por titulo");
+                System.out.println("3.- Busqueda por autor");
+                System.out.println("4.- Busqueda por genero");
+                System.out.println("5.- Busqueda por disponibilidad");
                 System.out.println("9.- Salir");
 
                 String opcion = scanner.nextLine();
 
                 switch (opcion) {
                     case "1":
-                        busquedaColumna("titulo");
+                        busquedaColumna("id");
                         break;
                     case "2":
-                        busquedaColumna("autor");
+                        busquedaColumna("titulo");
                         break;
                     case "3":
-                        busquedaColumna("genero");
+                        busquedaColumna("autor");
                         break;
                     case "4":
+                        busquedaColumna("genero");
+                        break;
+                    case "5":
                         busquedaColumna("disponible");
                         break;
                     case "9":
@@ -293,15 +297,21 @@ public class Biblioteca {
         return salir;
     }
 
+    // Método para buscar según la columna elegida
     public void busquedaColumna(String columna) throws SQLException {
         try {
+            // Query que nos sacara los libros según el valor de la columna por el que lo busquemos
             String queryBusqueda = "SELECT * FROM libros WHERE " + columna + " = ?";
             PreparedStatement pstmtBusqueda = conexion.prepareStatement(queryBusqueda);
     
-        
-            if (columna == "disponible") {
-                boolean nuevaDisponibilidad = Utilidades.leerBoolean("Busca por disponibilidad (1/0): ");
+            // Hacemos bloque if-else ya que hay boolean, int y string 
+            if (columna.equals("disponible")) {
+                boolean nuevaDisponibilidad = Utilidades.leerBoolean("disponibilidad (1/0): ");
                 pstmtBusqueda.setBoolean(1, nuevaDisponibilidad);
+            }
+            else if (columna.equals("id")) {
+                int nuevoValor = Utilidades.leerNum("código del libro: ");
+                pstmtBusqueda.setInt(1, nuevoValor);
             }
             else {
                 System.out.println("Busqueda de libro por " + columna + ": ");
@@ -314,6 +324,7 @@ public class Biblioteca {
             if (resultado.next()) {
                 do {
                     // Obtener valores de las columnas del resultado
+                    int id = resultado.getInt("id");
                     String titulo = resultado.getString("titulo");
                     String autor = resultado.getString("autor");
                     String genero = resultado.getString("genero");
@@ -321,6 +332,7 @@ public class Biblioteca {
     
                     // Hacer algo con los valores recuperados
                     System.out.println("Libro: ");
+                    System.out.println("Código: " + id);
                     System.out.println("Título: " + titulo);
                     System.out.println("Autor: " + autor);
                     System.out.println("Género: " + genero);
