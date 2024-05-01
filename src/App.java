@@ -36,9 +36,9 @@ public class App {
             case "3":
                 biblioteca.actualizarLibro();
                 break;
-                /*
             case "4":
-                biblioteca.buscarLibro();*/
+                biblioteca.buscarLibro();
+                break;
             case "9":
                 salir = true;
                 break;

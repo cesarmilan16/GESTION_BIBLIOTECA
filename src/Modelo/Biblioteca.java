@@ -157,11 +157,11 @@ public class Biblioteca {
             e.printStackTrace();
         }
         while (!salir) {
-            salir = menuLibro(titulo);
+            salir = menuActualizar(titulo);
         }
     }
     
-    public boolean menuLibro(String titulo) throws SQLException {
+    public boolean menuActualizar(String titulo) throws SQLException {
         boolean salir = false;
         try {
             
@@ -191,6 +191,7 @@ public class Biblioteca {
                         break;
                     case "9":
                         salir = true;
+                        break;
                     default:
                         break;
             }
@@ -231,6 +232,106 @@ public class Biblioteca {
             }
     
             pstmtActualizar.close();
+        } catch (SQLException e) {
+            conexion.rollback();
+            e.printStackTrace();
+        }
+    }
+
+    public void buscarLibro() throws SQLException {
+        boolean salir = false;
+        // Solicita al usuario el título del libro que desea Actualizar
+        System.out.println("***************************");
+        System.out.println("****** Buscar libro *******");
+        System.out.println("***************************");
+        while (!salir) {
+            salir = menuBuscar();
+        }
+    }
+    
+    public boolean menuBuscar() throws SQLException {
+        boolean salir = false;
+        try {
+                System.out.println("***************************");
+                System.out.println("****** Busqueda libro *****");
+                System.out.println("***************************");
+                System.out.println("1.- Busqueda por titulo");
+                System.out.println("2.- Busqueda por autor");
+                System.out.println("3.- Busqueda por genero");
+                System.out.println("4.- Busqueda por disponibilidad");
+                System.out.println("9.- Salir");
+
+                String opcion = scanner.nextLine();
+
+                switch (opcion) {
+                    case "1":
+                        busquedaColumna("titulo");
+                        break;
+                    case "2":
+                        busquedaColumna("autor");
+                        break;
+                    case "3":
+                        busquedaColumna("genero");
+                        break;
+                    case "4":
+                        busquedaColumna("disponible");
+                        break;
+                    case "9":
+                        salir = true;
+                        break;
+                    default:
+                        break;
+                }
+
+
+        } catch (SQLException e) {
+            conexion.rollback(); // Deshace la transacción en caso de error
+            e.printStackTrace();
+        } finally {
+            conexion.setAutoCommit(true); // Vuelve al modo de confirmación automática por defecto
+        }
+        return salir;
+    }
+
+    public void busquedaColumna(String columna) throws SQLException {
+        try {
+            String queryBusqueda = "SELECT * FROM libros WHERE " + columna + " = ?";
+            PreparedStatement pstmtBusqueda = conexion.prepareStatement(queryBusqueda);
+    
+        
+            if (columna == "disponible") {
+                boolean nuevaDisponibilidad = Utilidades.leerBoolean("Busca por disponibilidad (1/0): ");
+                pstmtBusqueda.setBoolean(1, nuevaDisponibilidad);
+            }
+            else {
+                System.out.println("Busqueda de libro por " + columna + ": ");
+                String nuevoValor = scanner.nextLine();
+                pstmtBusqueda.setString(1, nuevoValor);
+            }
+    
+            ResultSet resultado = pstmtBusqueda.executeQuery();
+
+            if (resultado.next()) {
+                do {
+                    // Obtener valores de las columnas del resultado
+                    String titulo = resultado.getString("titulo");
+                    String autor = resultado.getString("autor");
+                    String genero = resultado.getString("genero");
+                    boolean disponible = resultado.getBoolean("disponible");
+    
+                    // Hacer algo con los valores recuperados
+                    System.out.println("Libro: ");
+                    System.out.println("Título: " + titulo);
+                    System.out.println("Autor: " + autor);
+                    System.out.println("Género: " + genero);
+                    System.out.println("Disponible: " + disponible);
+                } while (resultado.next()); // Mover al siguiente registro mientras haya más registros
+            } else {
+                System.out.println("Libro no encontrado.");
+            }
+            
+            resultado.close();
+            pstmtBusqueda.close();
         } catch (SQLException e) {
             conexion.rollback();
             e.printStackTrace();
