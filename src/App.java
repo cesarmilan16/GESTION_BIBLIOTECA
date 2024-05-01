@@ -23,7 +23,6 @@ public class App {
         System.out.println("4.- Buscar libro");
         System.out.println("9.- Salir");
 
-        @SuppressWarnings("resource")
         Scanner scanner = new Scanner(System.in);
         String opcion = scanner.nextLine();
 
