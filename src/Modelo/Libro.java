@@ -62,7 +62,5 @@ public class Libro {
         System.out.println("Autor: " + this.autor);
         System.out.println("Genero: " + this.genero);
         System.out.println("Disponibilidad: " + this.disponible);
-
-
     }
 }
