@@ -45,8 +45,14 @@ public class Biblioteca {
         System.out.println("***************************");
         int id = Utilidades.leerNum("Ingrese el ID del libro que desea eliminar: ");
         try {
-            libroDAO.eliminarLibro(id);
-            System.out.println("Libro eliminado correctamente.");
+            ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro("id", String.valueOf(id));
+            if (!librosEncontrados.isEmpty()) {
+                libroDAO.eliminarLibro(id);
+                System.out.println("Libro eliminado correctamente.");
+            }
+            else {
+                System.out.println("Libro no encontrado.");
+            }
         } catch (SQLException e) {
             System.out.println("Error al eliminar el libro: " + e.getMessage());
         }
