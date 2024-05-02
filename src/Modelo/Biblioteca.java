@@ -3,7 +3,6 @@ package Modelo;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import Herramientas.Utilidades;
@@ -185,7 +184,7 @@ public class Biblioteca {
             valor = scanner.nextLine();
         }
         try {
-            List<Libro> librosEncontrados = libroDAO.buscarLibro(columna, valor);
+            ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro(columna, valor);
             if (librosEncontrados.isEmpty()) {
                 System.out.println("No se encontraron libros con ese criterio de búsqueda.");
             } else {
