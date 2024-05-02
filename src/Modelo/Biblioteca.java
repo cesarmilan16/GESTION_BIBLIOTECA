@@ -128,7 +128,6 @@ public class Biblioteca {
                         boolean nuevoDisponible = Utilidades.leerBoolean("¿Nuevo estado de disponibilidad? (1/0)");
                         libro.setDisponible(nuevoDisponible);
                         libroDAO.actualizarLibro(libro);
-                        libroDAO.actualizarLibro(libro);
                         System.out.println("Libro actualizado correctamente.");
                         break;
                     case "9":
