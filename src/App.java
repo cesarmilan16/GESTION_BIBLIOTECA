@@ -1,6 +1,7 @@
 import java.sql.SQLException;
 import java.util.Scanner;
 import Modelo.Biblioteca;
+import Modelo.Conexion;
 
 public class App {
 
@@ -42,6 +43,7 @@ public class App {
             case "9":
                 salir = true;
                 scanner.close();
+                Conexion.cerrarConexion();
                 break;
             default:
                 break;
