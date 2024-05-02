@@ -1,11 +1,10 @@
-/*package Modelo;
+package Modelo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class LibroDAO {
     private Connection conexion;
@@ -14,6 +13,7 @@ public class LibroDAO {
         this.conexion = conexion;
     }
 
+    // Query para insertar nuevo libro con los datos de un objeto libro que hemos creado
     public void insertarLibro(Libro libro) throws SQLException {
         String query = "INSERT INTO libros (titulo, autor, genero, disponible) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
@@ -25,6 +25,7 @@ public class LibroDAO {
         }
     }
 
+    // Query para eliminar un libro de la base de datos según su id
     public void eliminarLibro(int id) throws SQLException {
         String query = "DELETE FROM libros WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
@@ -33,6 +34,7 @@ public class LibroDAO {
         }
     }
 
+    // Query que actualiza los valores del libro
     public void actualizarLibro(Libro libro) throws SQLException {
         String query = "UPDATE libros SET titulo = ?, autor = ?, genero = ?, disponible = ? WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
@@ -45,9 +47,9 @@ public class LibroDAO {
         }
     }
 
-    public List<Libro> buscarLibro(String columna, String valor) throws SQLException {
+    public ArrayList<Libro> buscarLibro(String columna, String valor) throws SQLException {
         String query = "SELECT * FROM libros WHERE " + columna + " = ?";
-        List<Libro> librosEncontrados = new ArrayList<>();
+        ArrayList<Libro> librosEncontrados = new ArrayList<>();
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
             pstmt.setString(1, valor);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -63,4 +65,4 @@ public class LibroDAO {
         }
         return librosEncontrados;
     }
-}*/
+}

@@ -55,4 +55,14 @@ public class Libro {
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
+
+    public void imprimirLibro() {
+        System.out.println("ID: " + this.id);
+        System.out.println("Titulo: " + this.titulo);
+        System.out.println("Autor: " + this.autor);
+        System.out.println("Genero: " + this.genero);
+        System.out.println("Disponibilidad: " + this.disponible);
+
+
+    }
 }

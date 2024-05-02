@@ -1,167 +1,81 @@
 package Modelo;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-
 
 import Herramientas.Utilidades;
 
 public class Biblioteca {
-    private Connection conexion;
+    private LibroDAO libroDAO;
     private Scanner scanner = new Scanner(System.in);
 
     // Constructor que establece la conexión al instanciar el objeto
-    public Biblioteca() {
-        this.conexion = Conexion.establecerConexion();
+    public Biblioteca(LibroDAO libroDAO, Connection conexion) {
+        this.libroDAO = libroDAO;
     }
-    
-    // Método para insertar un libro en la base de datos
-    public void insertarLibro() throws SQLException {
+
+    // Método para insertar libros
+    public void insertarLibro() {
+        System.out.println("***************************");
+        System.out.println("****** Insertar libro *****");
+        System.out.println("***************************");
+        System.out.print("Título: ");
+        String titulo = scanner.nextLine();
+        System.out.print("Autor: ");
+        String autor = scanner.nextLine();
+        System.out.print("Género: ");
+        String genero = scanner.nextLine();
+        boolean disponible = Utilidades.leerBoolean("¿Disponible? (1/0): ");
+        Libro libro = new Libro(0, titulo, autor, genero, disponible);
         try {
-            conexion.setAutoCommit(false); // Desactiva la confirmación automática de transacciones
-            String consultaDisponibilidad = "SELECT disponible FROM libros WHERE titulo = ?";
-            PreparedStatement pstmtConsulta = conexion.prepareStatement(consultaDisponibilidad);
-            String queryInsertar = "INSERT INTO libros (titulo, autor, genero) VALUES (?, ?, ?)";
-            PreparedStatement pstmtInsertar = conexion.prepareStatement(queryInsertar);
-
-            // Solicita al usuario que ingrese los detalles del libro
-            System.out.println("***************************");
-            System.out.println("****** Insertar libro *****");
-            System.out.println("***************************");
-            System.out.println("Titulo: ");
-            String titulo = scanner.nextLine();
-
-            // Consulta si el libro ya existe en la base de datos
-            pstmtConsulta.setString(1, titulo);
-            ResultSet resultado = pstmtConsulta.executeQuery();
-
-            boolean disponible = false;
-            if (resultado.next()) {
-                disponible = resultado.getBoolean("disponible"); // Verifica la disponibilidad del libro
-            }
-            
-            // Si el libro no está disponible, solicita información adicional y lo inserta en la base de datos
-            if (!disponible) {
-                System.out.println("Autor: ");
-                String autor = scanner.nextLine();
-                System.out.println("Genero: ");
-                String genero = scanner.nextLine();
-
-                // Inserta el libro en la base de datos
-                pstmtInsertar.setString(1, titulo);
-                pstmtInsertar.setString(2, autor);
-                pstmtInsertar.setString(3, genero);
-                pstmtInsertar.executeUpdate(); 
-                System.out.println("\nLibro insertado correctamente.\n"); 
-            } else {
-                // Si el libro ya está disponible, muestra un mensaje
-                System.out.println("\nLibro ya disponible\n");
-            }
-
-            // Cierra los recursos
-            resultado.close();
-            pstmtConsulta.close();
+            libroDAO.insertarLibro(libro);
+            System.out.println("Libro insertado correctamente.");
         } catch (SQLException e) {
-            conexion.rollback(); // Deshace la transacción en caso de error
-            e.printStackTrace();
-        } finally {
-            conexion.setAutoCommit(true); // Vuelve al modo de confirmación automática por defecto
+            System.out.println("Error al insertar el libro: " + e.getMessage());
         }
     }
 
     // Método para eliminar un libro de la base de datos
-    public void eliminarLibro() throws SQLException {
+    public void eliminarLibro() {
+        System.out.println("***************************");
+        System.out.println("****** Eliminar libro *****");
+        System.out.println("***************************");
+        int id = Utilidades.leerNum("Ingrese el ID del libro que desea eliminar: ");
         try {
-            conexion.setAutoCommit(false); // Desactiva la confirmación automática de transacciones
-            String consultaDisponibilidad = "SELECT disponible FROM libros WHERE titulo = ?";
-            PreparedStatement pstmtConsulta = conexion.prepareStatement(consultaDisponibilidad);
-            String queryEliminar = "DELETE FROM libros WHERE titulo = ?";
-            PreparedStatement pstmtEliminar = conexion.prepareStatement(queryEliminar);
-
-            // Solicita al usuario el título del libro que desea eliminar
-            System.out.println("***************************");
-            System.out.println("****** Eliminar libro *****");
-            System.out.println("***************************");
-            System.out.println("Titulo: ");
-            String titulo = scanner.nextLine();
-
-            // Consulta si el libro existe en la base de datos
-            pstmtConsulta.setString(1, titulo);
-            ResultSet resultado = pstmtConsulta.executeQuery();
-
-            boolean disponible = false;
-            if (resultado.next()) {
-                disponible = resultado.getBoolean("disponible"); // Verifica la disponibilidad del libro
-            }
-            
-            // Si el libro no está disponible no se puede eliminar
-            if (!disponible) {
-                System.out.println("\nLibro no se encuentra en la base de datos.\n"); 
-            } else {
-                // Si el libro ya está disponible se elimina
-                pstmtEliminar.setString(1, titulo);
-                int filasAfectadas = pstmtEliminar.executeUpdate();
-
-                if (filasAfectadas > 0) {
-                    System.out.println("\nLibro eliminado con exito\n");
-                } else {
-                    System.out.println("\nNo se encontro el libro: " + titulo + "\n");
-                }
-            }
-
-            // Cierra los recursos
-            resultado.close();
-            pstmtConsulta.close();
+            libroDAO.eliminarLibro(id);
+            System.out.println("Libro eliminado correctamente.");
         } catch (SQLException e) {
-            conexion.rollback(); // Deshace la transacción en caso de error
-            e.printStackTrace();
-        } finally {
-            conexion.setAutoCommit(true); // Vuelve al modo de confirmación automática por defecto
+            System.out.println("Error al eliminar el libro: " + e.getMessage());
         }
     }
 
     public void actualizarLibro() throws SQLException {
         boolean salir = false;
-        // Solicita al usuario el título del libro que desea Actualizar
         System.out.println("***************************");
         System.out.println("**** Actualizar libro *****");
         System.out.println("***************************");
-        System.out.println("Código: ");
-        int id = Utilidades.leerNum("código de libro: ");
-        
+        int id = Utilidades.leerNum("Ingrese el ID del libro que desea actualizar: ");
         try {
-            conexion.setAutoCommit(false); // Desactiva la confirmación automática de transacciones
-            String consultaDisponibilidad = "SELECT disponible FROM libros WHERE id = ?";
-            PreparedStatement pstmtConsulta = conexion.prepareStatement(consultaDisponibilidad);
-
-            // Consulta si el libro existe en la base de datos
-            pstmtConsulta.setInt(1, id);
-            ResultSet resultado = pstmtConsulta.executeQuery();
-
-            boolean disponible = false;
-            if (resultado.next()) {
-                disponible = resultado.getBoolean("disponible"); // Verifica la disponibilidad del libro
+            ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro("id", String.valueOf(id));
+            if (librosEncontrados.isEmpty()) {
+                System.out.println("No se encontró ningún libro con ese ID.");
+                return;
             }
-            
-            if (!disponible) {
-                System.out.println("\nLibro no se encuentra en la base de datos.\n");
+            Libro libro = librosEncontrados.get(0);
+            System.out.println("Libro encontrado:");
+            libro.imprimirLibro();
+            while (!salir) {
+                salir = menuActualizar(libro);
             }
-
-            resultado.close();
-            pstmtConsulta.close();
         } catch (SQLException e) {
-            conexion.rollback(); // Deshace la transacción en caso de error
-            e.printStackTrace();
-        }
-        while (!salir) {
-            salir = menuActualizar(id);
+            System.out.println("Error al actualizar el libro: " + e.getMessage());
         }
     }
-    
-    public boolean menuActualizar(int id) throws SQLException {
+
+    private boolean menuActualizar(Libro libro) throws SQLException {
         boolean salir = false;
         try {
             
@@ -178,16 +92,38 @@ public class Biblioteca {
 
                 switch (opcion) {
                     case "1":
-                        actualizarColumna("titulo",id);
+                        System.out.print("Nuevo título: ");
+                        String nuevoTitulo = scanner.nextLine();
+                        if (!nuevoTitulo.isEmpty()) {
+                            libro.setTitulo(nuevoTitulo);
+                            libroDAO.actualizarLibro(libro);
+                            System.out.println("Libro actualizado correctamente.");
+                        }
                         break;
                     case "2":
-                        actualizarColumna("autor", id);
+                        System.out.print("Nuevo autor: ");
+                        String nuevoAutor = scanner.nextLine();
+                        if (!nuevoAutor.isEmpty()) {
+                            libro.setAutor(nuevoAutor);
+                            libroDAO.actualizarLibro(libro);
+                            System.out.println("Libro actualizado correctamente.");
+                    }
                         break;
                     case "3":
-                        actualizarColumna("genero",id);
+                        System.out.print("Nuevo género: ");
+                        String nuevoGenero = scanner.nextLine();
+                        if (!nuevoGenero.isEmpty()) {
+                            libro.setGenero(nuevoGenero);
+                            libroDAO.actualizarLibro(libro);
+                            System.out.println("Libro actualizado correctamente.");
+                        }
                         break;
                     case "4":
-                        actualizarColumna("disponible", id);
+                        boolean nuevoDisponible = Utilidades.leerBoolean("¿Nuevo estado de disponibilidad? (1/0)");
+                        libro.setDisponible(nuevoDisponible);
+                        libroDAO.actualizarLibro(libro);
+                        libroDAO.actualizarLibro(libro);
+                        System.out.println("Libro actualizado correctamente.");
                         break;
                     case "9":
                         salir = true;
@@ -198,155 +134,63 @@ public class Biblioteca {
 
 
         } catch (SQLException e) {
-            conexion.rollback(); // Deshace la transacción en caso de error
-            e.printStackTrace();
-        } finally {
-            conexion.setAutoCommit(true); // Vuelve al modo de confirmación automática por defecto
+            System.out.println("Error al actualizar el libro: " + e.getMessage());
         }
         return salir;
     }
 
-    public void actualizarColumna(String columna, int id) throws SQLException {
-        try {
-            String queryActualizar = "UPDATE libros SET " + columna + " = ? WHERE id = ?";
-            PreparedStatement pstmtActualizar = conexion.prepareStatement(queryActualizar);
-    
-        
-            if (columna.equals("disponible")) {
-                boolean nuevaDisponibilidad = Utilidades.leerBoolean("Nuevo valor para disponibilidad (1/0): ");
-                pstmtActualizar.setBoolean(1, nuevaDisponibilidad);
-                pstmtActualizar.setInt(2, id);
-            }
-            else {
-                System.out.println("Nuevo valor para " + columna + ": ");
-                String nuevoValor = scanner.nextLine();
-                pstmtActualizar.setString(1, nuevoValor);
-                pstmtActualizar.setInt(2, id);
-            }
-    
-            int filasActualizadas = pstmtActualizar.executeUpdate();
-            if (filasActualizadas > 0) {
-                System.out.println("Libro actualizado correctamente.");
-            } else {
-                System.out.println("No se encontró el libro.");
-            }
-    
-            pstmtActualizar.close();
-        } catch (SQLException e) {
-            conexion.rollback();
-            e.printStackTrace();
-        }
-    }
-
-    public void buscarLibro() throws SQLException {
-        boolean salir = false;
-        // Solicita al usuario el título del libro que desea Actualizar
+    public void buscarLibro() {
         System.out.println("***************************");
         System.out.println("****** Buscar libro *******");
         System.out.println("***************************");
-        while (!salir) {
-            salir = menuBuscar();
+        System.out.println("1. Buscar por ID");
+        System.out.println("2. Buscar por título");
+        System.out.println("3. Buscar por autor");
+        System.out.println("4. Buscar por género");
+        System.out.println("5. Buscar por disponibilidad");
+        int opcion = Utilidades.leerNum("Seleccione una opción de búsqueda: ");
+        String columna = "";
+        switch (opcion) {
+            case 1:
+                columna = "id";
+                break;
+            case 2:
+                columna = "titulo";
+                break;
+            case 3:
+                columna = "autor";
+                break;
+            case 4:
+                columna = "genero";
+                break;
+            case 5:
+                columna = "disponible";
+                break;
+            default:
+                System.out.println("Opción de búsqueda no válida.");
+                return;
         }
-    }
-    
-    public boolean menuBuscar() throws SQLException {
-        boolean salir = false;
-        try {
-                System.out.println("***************************");
-                System.out.println("****** Busqueda libro *****");
-                System.out.println("***************************");
-                System.out.println("1.- Busqueda por código");
-                System.out.println("2.- Busqueda por titulo");
-                System.out.println("3.- Busqueda por autor");
-                System.out.println("4.- Busqueda por genero");
-                System.out.println("5.- Busqueda por disponibilidad");
-                System.out.println("9.- Salir");
-
-                String opcion = scanner.nextLine();
-
-                switch (opcion) {
-                    case "1":
-                        busquedaColumna("id");
-                        break;
-                    case "2":
-                        busquedaColumna("titulo");
-                        break;
-                    case "3":
-                        busquedaColumna("autor");
-                        break;
-                    case "4":
-                        busquedaColumna("genero");
-                        break;
-                    case "5":
-                        busquedaColumna("disponible");
-                        break;
-                    case "9":
-                        salir = true;
-                        break;
-                    default:
-                        break;
-                }
-
-
-        } catch (SQLException e) {
-            conexion.rollback(); // Deshace la transacción en caso de error
-            e.printStackTrace();
-        } finally {
-            conexion.setAutoCommit(true); // Vuelve al modo de confirmación automática por defecto
+        String valor = null;
+        if (columna.equals("disponible")) {
+            System.out.print("Ingrese el valor a buscar (1/0): ");
+            valor = scanner.nextLine();
         }
-        return salir;
-    }
-
-    // Método para buscar según la columna elegida
-    public void busquedaColumna(String columna) throws SQLException {
+        else {
+            System.out.print("Ingrese el valor a buscar: ");
+            valor = scanner.nextLine();
+        }
         try {
-            // Query que nos sacara los libros según el valor de la columna por el que lo busquemos
-            String queryBusqueda = "SELECT * FROM libros WHERE " + columna + " = ?";
-            PreparedStatement pstmtBusqueda = conexion.prepareStatement(queryBusqueda);
-    
-            // Hacemos bloque if-else ya que hay boolean, int y string 
-            if (columna.equals("disponible")) {
-                boolean nuevaDisponibilidad = Utilidades.leerBoolean("disponibilidad (1/0): ");
-                pstmtBusqueda.setBoolean(1, nuevaDisponibilidad);
-            }
-            else if (columna.equals("id")) {
-                int nuevoValor = Utilidades.leerNum("código del libro: ");
-                pstmtBusqueda.setInt(1, nuevoValor);
-            }
-            else {
-                System.out.println("Busqueda de libro por " + columna + ": ");
-                String nuevoValor = scanner.nextLine();
-                pstmtBusqueda.setString(1, nuevoValor);
-            }
-    
-            ResultSet resultado = pstmtBusqueda.executeQuery();
-
-            if (resultado.next()) {
-                do {
-                    // Obtener valores de las columnas del resultado
-                    int id = resultado.getInt("id");
-                    String titulo = resultado.getString("titulo");
-                    String autor = resultado.getString("autor");
-                    String genero = resultado.getString("genero");
-                    boolean disponible = resultado.getBoolean("disponible");
-    
-                    // Hacer algo con los valores recuperados
-                    System.out.println("Libro: ");
-                    System.out.println("Código: " + id);
-                    System.out.println("Título: " + titulo);
-                    System.out.println("Autor: " + autor);
-                    System.out.println("Género: " + genero);
-                    System.out.println("Disponible: " + disponible);
-                } while (resultado.next()); // Mover al siguiente registro mientras haya más registros
+            List<Libro> librosEncontrados = libroDAO.buscarLibro(columna, valor);
+            if (librosEncontrados.isEmpty()) {
+                System.out.println("No se encontraron libros con ese criterio de búsqueda.");
             } else {
-                System.out.println("Libro no encontrado.");
+                System.out.println("Libros encontrados:");
+                for (Libro libro : librosEncontrados) {
+                    libro.imprimirLibro();
+                }
             }
-            
-            resultado.close();
-            pstmtBusqueda.close();
         } catch (SQLException e) {
-            conexion.rollback();
-            e.printStackTrace();
+            System.out.println("Error al realizar la búsqueda: " + e.getMessage());
         }
     }
 }

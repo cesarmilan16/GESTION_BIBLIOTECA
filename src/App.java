@@ -1,11 +1,16 @@
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
 import Modelo.Biblioteca;
 import Modelo.Conexion;
+import Modelo.LibroDAO;
+
 
 public class App {
 
-    public static Biblioteca biblioteca = new Biblioteca();
+    public static Connection conexion = Conexion.establecerConexion();
+    public static LibroDAO libroDAO = new LibroDAO(conexion);
+    public static Biblioteca biblioteca = new Biblioteca(libroDAO, conexion);
     public static void main(String[] args) throws Exception {
         boolean salir = false;
         while (!salir) {

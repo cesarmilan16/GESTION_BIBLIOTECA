@@ -8,7 +8,7 @@ public class Utilidades {
     public static boolean leerBoolean(String dato) {
         while (true) {
             try {
-                System.out.println("Dar " + dato);
+                System.out.println(dato);
                 String datoLeido = scanner.nextLine();
                 if (datoLeido.equals("1")) {
                     return true;
@@ -26,7 +26,7 @@ public class Utilidades {
     public static int leerNum(String dato) {
         while (true) {
             try {
-                System.out.println("Dar " + dato);
+                System.out.println(dato);
                 String datoLeido = scanner.nextLine();
                 int datoNum = Integer.parseInt(datoLeido);
                 return datoNum;
