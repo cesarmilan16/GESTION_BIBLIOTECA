@@ -1,12 +1,14 @@
 package Modelo;
 
 public class Libro {
+    // Atributos de la clase
     private int id;
     private String titulo;
     private String autor;
     private String genero;
     private boolean disponible;
 
+    // Constructor de la clase
     public Libro(int id, String titulo, String autor, String genero, boolean disponible) {
         this.id = id;
         this.titulo = titulo;
@@ -56,6 +58,7 @@ public class Libro {
         this.disponible = disponible;
     }
 
+    // Método para imprimir el libro completo
     public void imprimirLibro() {
         System.out.println("ID: " + this.id);
         System.out.println("Titulo: " + this.titulo);

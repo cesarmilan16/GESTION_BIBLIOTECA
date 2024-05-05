@@ -7,13 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class LibroDAO {
+    // Atributo de la clase para la conexión a la base de datos
     private Connection conexion;
 
+    // Constructor de la clase que recibe una conexión a la base de datos
     public LibroDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
-    // Query para insertar nuevo libro con los datos de un objeto libro que hemos creado
+    // Método para insertar un nuevo libro en la base de datos
     public void insertarLibro(Libro libro) throws SQLException {
         String query = "INSERT INTO libros (titulo, autor, genero, disponible) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
@@ -25,7 +27,7 @@ public class LibroDAO {
         }
     }
 
-    // Query para eliminar un libro de la base de datos según su id
+    // Método para eliminar un libro de la base de datos por su ID
     public void eliminarLibro(int id) throws SQLException {
         String query = "DELETE FROM libros WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
@@ -34,7 +36,7 @@ public class LibroDAO {
         }
     }
 
-    // Query que actualiza los valores del libro
+    // Método para actualizar los datos de un libro en la base de datos
     public void actualizarLibro(Libro libro) throws SQLException {
         String query = "UPDATE libros SET titulo = ?, autor = ?, genero = ?, disponible = ? WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
@@ -47,6 +49,7 @@ public class LibroDAO {
         }
     }
 
+    // Método para buscar libros en la base de datos según un valor en una columna específica
     public ArrayList<Libro> buscarLibro(String columna, String valor) throws SQLException {
         String query = "SELECT * FROM libros WHERE " + columna + " = ?";
         ArrayList<Libro> librosEncontrados = new ArrayList<>();

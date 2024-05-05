@@ -8,9 +8,14 @@ import Modelo.LibroDAO;
 
 public class App {
 
+    // Establece una conexión estática a la base de datos utilizando la clase Conexion
     public static Connection conexion = Conexion.establecerConexion();
+    // Crea una instancia estática de LibroDAO para realizar operaciones de base de datos relacionadas con libros
     public static LibroDAO libroDAO = new LibroDAO(conexion);
+    // Crea una instancia estática de Biblioteca, que utiliza el objeto LibroDAO y la conexión a la base de datos
     public static Biblioteca biblioteca = new Biblioteca(libroDAO, conexion);
+
+    // Método principal que es un bucle que solo acaba cuando salir = true
     public static void main(String[] args) throws Exception {
         boolean salir = false;
         while (!salir) {
@@ -18,6 +23,7 @@ public class App {
         }
     }
 
+    // Menú de la App para realizar los métodos convenientes
     private static boolean mostrarApp() throws SQLException {
         boolean salir = false;
         System.out.println("*****************************");

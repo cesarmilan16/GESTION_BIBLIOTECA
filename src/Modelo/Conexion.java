@@ -4,11 +4,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Conexion {
+    // Atributos de la clase
     static String url = "jdbc:mysql://localhost:3306/gestion_biblioteca";
     static String usuario = "root";
     static String contraseña = "Cesarmilan1996";
     static Connection conexion = null;
 
+    // Método para establecer conexión con la base de datos
     public static Connection establecerConexion(){
         try {
             conexion = DriverManager.getConnection(url, usuario, contraseña);
@@ -20,6 +22,7 @@ public class Conexion {
         return conexion;
     }
 
+    // Método para cerrar la conexión con la base de datos
     public static void cerrarConexion() {
         if (conexion != null) {
             try {

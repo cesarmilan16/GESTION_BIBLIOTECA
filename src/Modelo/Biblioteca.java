@@ -8,6 +8,7 @@ import java.util.Scanner;
 import Herramientas.Utilidades;
 
 public class Biblioteca {
+    // Definimos los atributos de la clase
     private LibroDAO libroDAO;
     private Scanner scanner = new Scanner(System.in);
 
@@ -57,6 +58,7 @@ public class Biblioteca {
         }
     }
 
+    // Método para actualizar el libro
     public void actualizarLibro() throws SQLException {
         boolean salir = false;
         System.out.println("***************************");
@@ -80,6 +82,7 @@ public class Biblioteca {
         }
     }
 
+    // Menú para elegir que campo actualizar
     private boolean menuActualizar(Libro libro) throws SQLException {
         boolean salir = false;
         try {
@@ -143,6 +146,7 @@ public class Biblioteca {
         return salir;
     }
 
+    // Método para buscar libro según el campo que escogamos
     public void buscarLibro() {
         System.out.println("***************************");
         System.out.println("****** Buscar libro *******");
