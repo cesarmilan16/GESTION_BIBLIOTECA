@@ -17,6 +17,7 @@ public class LibroDAO {
 
     // Método para insertar un nuevo libro en la base de datos
     public void insertarLibro(Libro libro) throws SQLException {
+        // Consulta SQL para insertar un nuevo libro
         String query = "INSERT INTO libros (titulo, autor, genero, disponible) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
             pstmt.setString(1, libro.getTitulo());
@@ -29,6 +30,7 @@ public class LibroDAO {
 
     // Método para eliminar un libro de la base de datos por su ID
     public void eliminarLibro(int id) throws SQLException {
+        // Consulta SQL para eliminar un libro por su ID
         String query = "DELETE FROM libros WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
             pstmt.setInt(1, id);
@@ -38,6 +40,7 @@ public class LibroDAO {
 
     // Método para actualizar los datos de un libro en la base de datos
     public void actualizarLibro(Libro libro) throws SQLException {
+        // Consulta SQL para actualizar los datos de un libro
         String query = "UPDATE libros SET titulo = ?, autor = ?, genero = ?, disponible = ? WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
             pstmt.setString(1, libro.getTitulo());
@@ -51,6 +54,7 @@ public class LibroDAO {
 
     // Método para buscar libros en la base de datos según un valor en una columna específica
     public ArrayList<Libro> buscarLibro(String columna, String valor) throws SQLException {
+        // Consulta SQL para buscar libros según una columna y un valor específicos
         String query = "SELECT * FROM libros WHERE " + columna + " = ?";
         ArrayList<Libro> librosEncontrados = new ArrayList<>();
         try (PreparedStatement pstmt = conexion.prepareStatement(query)) {
