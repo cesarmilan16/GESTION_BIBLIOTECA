@@ -30,8 +30,10 @@ public class Biblioteca {
         System.out.print("Género: ");
         String genero = scanner.nextLine();
         boolean disponible = Utilidades.leerBoolean("¿Disponible? (1/0): ");
+        // Creamos un nuevo libro con los datos introducidos
         Libro libro = new Libro(0, titulo, autor, genero, disponible);
         try {
+            // Tratamos de añadir ese libro a la base de datos
             libroDAO.insertarLibro(libro);
             System.out.println("Libro insertado correctamente.");
         } catch (SQLException e) {
@@ -44,17 +46,22 @@ public class Biblioteca {
         System.out.println("***************************");
         System.out.println("****** Eliminar libro *****");
         System.out.println("***************************");
+        // Ingresamos el ID del libro a eliminar
         int id = Utilidades.leerNum("Ingrese el ID del libro que desea eliminar: ");
         try {
+            // Creamos una lista de Libro donde se añadira un libro si tiene esa id
             ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro("id", String.valueOf(id));
             if (!librosEncontrados.isEmpty()) {
+                // Si finalmente se encuentra en la BD se eliminará de esta
                 libroDAO.eliminarLibro(id);
                 System.out.println("Libro eliminado correctamente.");
             }
             else {
+                // Si no saltará el siguiente mensaje
                 System.out.println("Libro no encontrado.");
             }
         } catch (SQLException e) {
+            // Manejo de excepciones en caso de error al eliminar el libro
             System.out.println("Error al eliminar el libro: " + e.getMessage());
         }
     }
@@ -65,20 +72,27 @@ public class Biblioteca {
         System.out.println("***************************");
         System.out.println("**** Actualizar libro *****");
         System.out.println("***************************");
+        // Solicita al usuario que ingrese el ID del libro que desea actualizar
         int id = Utilidades.leerNum("Ingrese el ID del libro que desea actualizar: ");
         try {
+            // Busca en la base de datos el libro con el ID proporcionado
             ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro("id", String.valueOf(id));
             if (librosEncontrados.isEmpty()) {
+                // Si no se encuentra ningún libro con el ID proporcionado, muestra un mensaje de error y regresa
                 System.out.println("No se encontró ningún libro con ese ID.");
                 return;
             }
+            // Obtiene el primer libro encontrado (debería haber solo uno ya que se busca por ID)
             Libro libro = librosEncontrados.get(0);
+            // Imprime los detalles del libro encontrado
             System.out.println("Libro encontrado:");
             libro.imprimirLibro();
+            // Muestra el menú de opciones para actualizar el libro y continúa hasta que el usuario elija salir
             while (!salir) {
                 salir = menuActualizar(libro);
             }
         } catch (SQLException e) {
+            // Manejo de excepciones en caso de error al actualizar el libro
             System.out.println("Error al actualizar el libro: " + e.getMessage());
         }
     }
