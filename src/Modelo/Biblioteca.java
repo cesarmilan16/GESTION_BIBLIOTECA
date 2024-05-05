@@ -19,6 +19,7 @@ public class Biblioteca {
 
     // Método para insertar libros
     public void insertarLibro() {
+        // Ingresamos los datos del libro
         System.out.println("***************************");
         System.out.println("****** Insertar libro *****");
         System.out.println("***************************");
