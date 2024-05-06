@@ -26,6 +26,7 @@ public class App {
     // Menú de la App para realizar los métodos convenientes
     private static boolean mostrarApp() throws SQLException {
         boolean salir = false;
+        // Mostrar el menú principal de la aplicación
         System.out.println("*****************************");
         System.out.println("*******Menu principal********");
         System.out.println("*****************************");
@@ -38,27 +39,33 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         String opcion = scanner.nextLine();
 
+        // Procesamos la opción seleccionada
         switch (opcion) {
             case "1":
+                // Insertamos un nuevo libro
                 biblioteca.insertarLibro();
                 break;
             case "2":
+                // Eliminamos un libro existente
                 biblioteca.eliminarLibro();
                 break;
             case "3":
+                // Actualizamos la información de un libro
                 biblioteca.actualizarLibro();
                 break;
             case "4":
+                // Buscamos libros en la base de datos
                 biblioteca.buscarLibro();
                 break;
             case "9":
+                // Salimos de la aplicación
                 salir = true;
-                scanner.close();
-                Conexion.cerrarConexion();
+                scanner.close(); // Cerramos el Scanner para evitar fugas de recursos
+                Conexion.cerrarConexion(); // Cerramos la conexión a la base de datos
                 break;
             default:
                 break;
         }
-        return salir;
+        return salir; // Devolvemos indicación de si se debe salir de la aplicación o no
     }
 }

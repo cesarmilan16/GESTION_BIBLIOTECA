@@ -37,6 +37,7 @@ public class Biblioteca {
             libroDAO.insertarLibro(libro);
             System.out.println("Libro insertado correctamente.");
         } catch (SQLException e) {
+            // Manejo de excepciones en caso de error al añadir el libro
             System.out.println("Error al insertar el libro: " + e.getMessage());
         }
     }
@@ -75,14 +76,14 @@ public class Biblioteca {
         // Solicita al usuario que ingrese el ID del libro que desea actualizar
         int id = Utilidades.leerNum("Ingrese el ID del libro que desea actualizar: ");
         try {
-            // Busca en la base de datos el libro con el ID proporcionado
+            // Buscamos en la base de datos el libro con el ID proporcionado
             ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro("id", String.valueOf(id));
             if (librosEncontrados.isEmpty()) {
                 // Si no se encuentra ningún libro con el ID proporcionado, muestra un mensaje de error y regresa
                 System.out.println("No se encontró ningún libro con ese ID.");
                 return;
             }
-            // Obtiene el primer libro encontrado (debería haber solo uno ya que se busca por ID)
+            // Obtenemos el primer libro encontrado (debería haber solo uno ya que se busca por ID)
             Libro libro = librosEncontrados.get(0);
             // Imprime los detalles del libro encontrado
             System.out.println("Libro encontrado:");
@@ -101,7 +102,7 @@ public class Biblioteca {
     private boolean menuActualizar(Libro libro) throws SQLException {
         boolean salir = false;
         try {
-            
+                // Entramos en el menú para actualizar cada parte del libro
                 System.out.println("***************************");
                 System.out.println("**** Actualizar libro *****");
                 System.out.println("***************************");
@@ -115,39 +116,48 @@ public class Biblioteca {
 
                 switch (opcion) {
                     case "1":
+                        // Actualizar título del libro
                         System.out.print("Nuevo título: ");
                         String nuevoTitulo = scanner.nextLine();
                         if (!nuevoTitulo.isEmpty()) {
+                            // Le damos nuevo titulo al libro
                             libro.setTitulo(nuevoTitulo);
                             libroDAO.actualizarLibro(libro);
                             System.out.println("Libro actualizado correctamente.");
                         }
                         break;
                     case "2":
+                        // Actualizar autor del libro
                         System.out.print("Nuevo autor: ");
                         String nuevoAutor = scanner.nextLine();
                         if (!nuevoAutor.isEmpty()) {
+                            // Le damos nuevo autor al libro
                             libro.setAutor(nuevoAutor);
                             libroDAO.actualizarLibro(libro);
                             System.out.println("Libro actualizado correctamente.");
                     }
                         break;
                     case "3":
+                        // Actualizar género del libro
                         System.out.print("Nuevo género: ");
                         String nuevoGenero = scanner.nextLine();
                         if (!nuevoGenero.isEmpty()) {
+                            // Le damos nuevo genero al libro
                             libro.setGenero(nuevoGenero);
                             libroDAO.actualizarLibro(libro);
                             System.out.println("Libro actualizado correctamente.");
                         }
                         break;
                     case "4":
+                        // Actualizar disponibilidad del libro
                         boolean nuevoDisponible = Utilidades.leerBoolean("¿Nuevo estado de disponibilidad? (1/0)");
+                        // Le damos nueva disponibilidad al libro
                         libro.setDisponible(nuevoDisponible);
                         libroDAO.actualizarLibro(libro);
                         System.out.println("Libro actualizado correctamente.");
                         break;
                     case "9":
+                        // Salir del menú de actualización
                         salir = true;
                         break;
                     default:
@@ -156,13 +166,15 @@ public class Biblioteca {
 
 
         } catch (SQLException e) {
+            // Manejo de excepciones de SQL
             System.out.println("Error al actualizar el libro: " + e.getMessage());
         }
-        return salir;
+        return salir; // Devuelve indicación de si se debe salir del menú o no
     }
 
     // Método para buscar libro según el campo que escogamos
     public void buscarLibro() {
+        // Mostrar menú de opciones para buscar libros
         System.out.println("***************************");
         System.out.println("****** Buscar libro *******");
         System.out.println("***************************");
@@ -173,6 +185,7 @@ public class Biblioteca {
         System.out.println("5. Buscar por disponibilidad");
         int opcion = Utilidades.leerNum("Seleccione una opción de búsqueda: ");
         String columna = "";
+        // Asignar la columna de la base de datos correspondiente a la opción seleccionada
         switch (opcion) {
             case 1:
                 columna = "id";
@@ -194,6 +207,7 @@ public class Biblioteca {
                 return;
         }
         String valor = null;
+        // Solicitar al usuario el valor a buscar, considerando el caso especial de la disponibilidad
         if (columna.equals("disponible")) {
             System.out.print("Ingrese el valor a buscar (1/0): ");
             valor = scanner.nextLine();
@@ -203,16 +217,20 @@ public class Biblioteca {
             valor = scanner.nextLine();
         }
         try {
+            // Realiza la búsqueda en la base de datos
             ArrayList<Libro> librosEncontrados = libroDAO.buscarLibro(columna, valor);
             if (librosEncontrados.isEmpty()) {
+                // Muestra mensaje si no se encontraron libros con el criterio de búsqueda
                 System.out.println("No se encontraron libros con ese criterio de búsqueda.");
             } else {
+                // Muestra los libros encontrados
                 System.out.println("Libros encontrados:");
                 for (Libro libro : librosEncontrados) {
                     libro.imprimirLibro();
                 }
             }
         } catch (SQLException e) {
+            // Manejo de excepciones de SQL
             System.out.println("Error al realizar la búsqueda: " + e.getMessage());
         }
     }
